@@ -1,70 +1,163 @@
-# Getting Started with Create React App
+# Form2-App - Application de Gestion d'Utilisateurs
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Objectifs du Projet
 
-## Available Scripts
+Ce projet vise à créer une application web complète avec une architecture Docker moderne, incluant un formulaire d'inscription, une gestion d'utilisateurs et un système d'administration.
 
-In the project directory, you can run:
+### Architecture Technique
 
-### `npm start`
+- **Frontend**: React.js avec formulaire d'inscription
+- **Backend**: API Python (FastAPI/Flask)
+- **Base de données**: MySQL avec Adminer pour la gestion
+- **Containerisation**: Docker Compose pour l'orchestration
+- **Tests**: Tests unitaires, d'intégration et end-to-end avec Cypress
+- **CI/CD**: GitHub Actions avec déploiement automatique
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Fonctionnalités
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Application React
+- Formulaire d'inscription avec sauvegarde en base de données (remplace le localStorage)
+- Affichage de la liste des utilisateurs (informations réduites)
+- Système d'authentification administrateur
+- Gestion des utilisateurs (suppression, consultation des informations privées)
 
-### `npm test`
+### Compte Administrateur
+L'administrateur est créé automatiquement lors de l'initialisation de la base de données :
+- **Email**: loise.fenoll@ynov.com
+- **Mot de passe**: PvdrTAzTeR247sDnAZBr
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Architecture Docker
 
-### `npm run build`
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   React     │    │   Python    │    │   MySQL     │    │  Adminer    │
+│  Frontend   │◄──►│   Backend   │◄──►│  Database   │◄──►│   Admin     │
+│             │    │             │    │             │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Pipeline GitHub Actions
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Tests
+1. **Tests unitaires** avec rapport de couverture sur Codecov
+2. **Tests d'intégration** 
+3. **Tests end-to-end** avec Cypress dans l'environnement Docker
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Déploiement
+- **Frontend**: GitHub Pages
+- **Backend**: Vercel
+- **Base de données**: Aiven ou AlwaysData (production)
 
-### `npm run eject`
+## Critères d'Évaluation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+| Critère | Points |
+|---------|--------|
+| Architecture Docker fonctionnelle (MySQL/Python/Adminer/React) | 6 pts |
+| Tests unitaires et d'intégration avec rapport de couverture sur Codecov | 6 pts |
+| Tests end-to-end avec Cypress | 6 pts |
+| Pipeline GitHub Actions (tests + déploiement) avec DB en production | 2 pts |
+| **Total** | **20 pts** |
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Installation et Développement
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Prérequis
+- Docker et Docker Compose
+- Node.js (pour le développement local)
+- Python 3.8+
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Démarrage Rapide
 
-## Learn More
+```bash
+# Cloner le repository
+git clone <repository-url>
+cd form2-app
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Démarrer l'architecture Docker
+docker-compose up -d
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Accéder à l'application
+# Frontend: http://localhost:3000
+# Adminer: http://localhost:8080
+# API Backend: http://localhost:8000
+```
 
-### Code Splitting
+### Variables d'Environnement
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Créez un fichier `.env` à la racine du projet :
 
-### Analyzing the Bundle Size
+```env
+# Base de données
+DB_HOST=mysql
+DB_PORT=3306
+DB_NAME=form2app
+DB_USER=root
+DB_PASSWORD=your_password
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# Admin credentials
+ADMIN_EMAIL=loise.fenoll@ynov.com
+ADMIN_PASSWORD=PvdrTAzTeR247sDnAZBr
 
-### Making a Progressive Web App
+# Production database (Aiven/AlwaysData)
+PROD_DB_URL=your_production_database_url
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Scripts Disponibles
 
-### Advanced Configuration
+### Développement
+```bash
+npm start          # Démarre l'app React en mode développement
+npm test           # Lance les tests unitaires
+npm run build      # Build de production
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Docker
+```bash
+docker-compose up -d    # Démarre tous les services
+docker-compose down     # Arrête tous les services
+docker-compose logs     # Affiche les logs
+```
 
-### Deployment
+### Tests
+```bash
+npm run test:unit      # Tests unitaires
+npm run test:integration # Tests d'intégration
+npm run test:e2e       # Tests end-to-end avec Cypress
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Structure du Projet
 
-### `npm run build` fails to minify
+```
+form2-app/
+├── frontend/          # Application React
+├── backend/           # API Python
+├── database/          # Scripts de base de données
+├── docker/            # Configuration Docker
+├── tests/             # Tests unitaires et d'intégration
+├── cypress/           # Tests end-to-end
+├── .github/           # GitHub Actions
+└── docs/              # Documentation
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Déploiement
+
+### Production
+- **Frontend**: Automatiquement déployé sur GitHub Pages via GitHub Actions
+- **Backend**: Automatiquement déployé sur Vercel via GitHub Actions
+- **Base de données**: MySQL sur Aiven ou AlwaysData
+
+### Environnement de Test
+- Tests automatisés dans l'environnement Docker
+- Validation de l'architecture complète
+- Tests de performance et de sécurité
+
+## Contribution
+
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## Support
+
+Pour toute question ou problème, veuillez ouvrir une issue sur GitHub. 
