@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+build
+.git
+*.md
+.env
+coverage
+.nyc_output
+.cypress
+cypress/videos
+cypress/screenshots 

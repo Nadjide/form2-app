@@ -2,21 +2,33 @@
   "name": "form2-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://nadjide.github.io/form2-app/",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.6.1",
+    "axios": "^1.6.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
+    "use": "^3.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build-npm": "cross-env NODE_ENV=production npx babel src --out-dir dist --copy-files",
+    "test": "react-scripts test --coverage --collectCoverageFrom=src/**/*js* --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --watchAll=false --setupFiles=./.jest/setEnvVars.js",
+    "test:unit": "jest",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:watch": "jest --watch",
+    "eject": "react-scripts eject",
+    "jsdoc": "jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./public/docs",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -34,6 +46,27 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.25.7",
+    "@babel/core": "^7.27.4",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-react-jsx": "^7.25.7",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "babel-jest": "^30.0.0",
+    "cross-env": "^7.0.3",
+    "cypress": "^13.6.6",
+    "gh-pages": "^6.1.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.5.1",
+    "jsdoc": "^4.0.2",
+    "react-test-renderer": "^19.0.0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)/"
     ]
   }
 }

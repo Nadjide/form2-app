@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>Form2-App - Application de Gestion d'Utilisateurs</h1>
+<h2>Objectifs du Projet</h2>
+<p>Ce projet vise à créer une application web complète avec une architecture Docker moderne, incluant un formulaire d'inscription, une gestion d'utilisateurs et un système d'administration.</p>
+<h3>Architecture Technique</h3>
+<ul>
+<li><strong>Frontend</strong>: React.js avec formulaire d'inscription</li>
+<li><strong>Backend</strong>: API Python (FastAPI/Flask)</li>
+<li><strong>Base de données</strong>: MySQL avec Adminer pour la gestion</li>
+<li><strong>Containerisation</strong>: Docker Compose pour l'orchestration</li>
+<li><strong>Tests</strong>: Tests unitaires, d'intégration et end-to-end avec Cypress</li>
+<li><strong>CI/CD</strong>: GitHub Actions avec déploiement automatique</li>
+</ul>
+<h2>Fonctionnalités</h2>
+<h3>Application React</h3>
+<ul>
+<li>Formulaire d'inscription avec sauvegarde en base de données (remplace le localStorage)</li>
+<li>Affichage de la liste des utilisateurs (informations réduites)</li>
+<li>Système d'authentification administrateur</li>
+<li>Gestion des utilisateurs (suppression, consultation des informations privées)</li>
+</ul>
+<h3>Compte Administrateur</h3>
+<p>L'administrateur est créé automatiquement lors de l'initialisation de la base de données :</p>
+<ul>
+<li><strong>Email</strong>: loise.fenoll@ynov.com</li>
+<li><strong>Mot de passe</strong>: PvdrTAzTeR247sDnAZBr</li>
+</ul>
+<h2>Architecture Docker</h2>
+<pre class="prettyprint source"><code>┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   React     │    │   Python    │    │   MySQL     │    │  Adminer    │
+│  Frontend   │◄──►│   Backend   │◄──►│  Database   │◄──►│   Admin     │
+│             │    │             │    │             │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+</code></pre>
+<h2>Pipeline GitHub Actions</h2>
+<h3>Tests</h3>
+<ol>
+<li><strong>Tests unitaires</strong> avec rapport de couverture sur Codecov</li>
+<li><strong>Tests d'intégration</strong></li>
+<li><strong>Tests end-to-end</strong> avec Cypress dans l'environnement Docker</li>
+</ol>
+<h3>Déploiement</h3>
+<ul>
+<li><strong>Frontend</strong>: GitHub Pages</li>
+<li><strong>Backend</strong>: Vercel</li>
+<li><strong>Base de données</strong>: Aiven ou AlwaysData (production)</li>
+</ul>
+<h2>Critères d'Évaluation</h2>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Architecture Docker fonctionnelle (MySQL/Python/Adminer/React)</td>
+<td>6 pts</td>
+</tr>
+<tr>
+<td>Tests unitaires et d'intégration avec rapport de couverture sur Codecov</td>
+<td>6 pts</td>
+</tr>
+<tr>
+<td>Tests end-to-end avec Cypress</td>
+<td>6 pts</td>
+</tr>
+<tr>
+<td>Pipeline GitHub Actions (tests + déploiement) avec DB en production</td>
+<td>2 pts</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>20 pts</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>Installation et Développement</h2>
+<h3>Prérequis</h3>
+<ul>
+<li>Docker et Docker Compose</li>
+<li>Node.js (pour le développement local)</li>
+<li>Python 3.8+</li>
+</ul>
+<h3>Démarrage Rapide</h3>
+<pre class="prettyprint source lang-bash"><code># Cloner le repository
+git clone &lt;repository-url>
+cd form2-app
+
+# Démarrer l'architecture Docker
+docker-compose up -d
+
+# Accéder à l'application
+# Frontend: http://localhost:3000
+# Adminer: http://localhost:8080
+# API Backend: http://localhost:8000
+</code></pre>
+<h3>Variables d'Environnement</h3>
+<p>Créez un fichier <code>.env</code> à la racine du projet :</p>
+<pre class="prettyprint source lang-env"><code># Base de données
+DB_HOST=mysql
+DB_PORT=3306
+DB_NAME=form2app
+DB_USER=root
+DB_PASSWORD=your_password
+
+# Admin credentials
+ADMIN_EMAIL=loise.fenoll@ynov.com
+ADMIN_PASSWORD=PvdrTAzTeR247sDnAZBr
+
+# Production database (Aiven/AlwaysData)
+PROD_DB_URL=your_production_database_url
+</code></pre>
+<h2>Scripts Disponibles</h2>
+<h3>Développement</h3>
+<pre class="prettyprint source lang-bash"><code>npm start          # Démarre l'app React en mode développement
+npm test           # Lance les tests unitaires
+npm run build      # Build de production
+</code></pre>
+<h3>Docker</h3>
+<pre class="prettyprint source lang-bash"><code>docker-compose up -d    # Démarre tous les services
+docker-compose down     # Arrête tous les services
+docker-compose logs     # Affiche les logs
+</code></pre>
+<h3>Tests</h3>
+<pre class="prettyprint source lang-bash"><code>npm run test:unit      # Tests unitaires
+npm run test:integration # Tests d'intégration
+npm run test:e2e       # Tests end-to-end avec Cypress
+</code></pre>
+<h2>Structure du Projet</h2>
+<pre class="prettyprint source"><code>form2-app/
+├── frontend/          # Application React
+├── backend/           # API Python
+├── database/          # Scripts de base de données
+├── docker/            # Configuration Docker
+├── tests/             # Tests unitaires et d'intégration
+├── cypress/           # Tests end-to-end
+├── .github/           # GitHub Actions
+└── docs/              # Documentation
+</code></pre>
+<h2>Déploiement</h2>
+<h3>Production</h3>
+<ul>
+<li><strong>Frontend</strong>: Automatiquement déployé sur GitHub Pages via GitHub Actions</li>
+<li><strong>Backend</strong>: Automatiquement déployé sur Vercel via GitHub Actions</li>
+<li><strong>Base de données</strong>: MySQL sur Aiven ou AlwaysData</li>
+</ul>
+<h3>Environnement de Test</h3>
+<ul>
+<li>Tests automatisés dans l'environnement Docker</li>
+<li>Validation de l'architecture complète</li>
+<li>Tests de performance et de sécurité</li>
+</ul>
+<h2>Contribution</h2>
+<ol>
+<li>Fork le projet</li>
+<li>Créer une branche feature (<code>git checkout -b feature/AmazingFeature</code>)</li>
+<li>Commit les changements (<code>git commit -m 'Add some AmazingFeature'</code>)</li>
+<li>Push vers la branche (<code>git push origin feature/AmazingFeature</code>)</li>
+<li>Ouvrir une Pull Request</li>
+</ol>
+<h2>Support</h2>
+<p>Pour toute question ou problème, veuillez ouvrir une issue sur GitHub.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jun 17 2025 10:42:38 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

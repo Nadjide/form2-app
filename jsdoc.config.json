@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["./src/"],
+    "exclude": ["node_modules/", "build/", "dist/"]
+  },
+  "opts": {
+    "destination": "./public/docs/",
+    "recurse": true
+  },
+  "plugins": ["plugins/markdown"]
+} 
