@@ -38,8 +38,18 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Run tests
-        run: npm run test:unit
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Nadjide/form2-app
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
       - name: Generate documentation
         run: npm run jsdoc
@@ -74,12 +84,36 @@ jobs:
       - name: Check services health
         run: |
           echo "Checking MySQL..."
-          docker compose exec mysql mysqladmin ping -h localhost --silent
+          for i in {1..10}; do
+            if docker compose exec mysql mysqladmin ping -h localhost --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "MySQL not ready, waiting... ($i/10)"
+            sleep 10
+          done
+          
           echo "Checking Frontend..."
-          curl -f http://localhost:3000 || (echo "Frontend not ready" && exit 1)
+          for i in {1..10}; do
+            if curl -f http://localhost:3000 >/dev/null 2>&1; then
+              echo "Frontend is ready!"
+              break
+            fi
+            echo "Frontend not ready, waiting... ($i/10)"
+            sleep 10
+          done
+          
           echo "Checking Backend..."
-          curl -f http://localhost:8000 || (echo "Backend not ready" && exit 1)
-          echo "All services are ready!"
+          for i in {1..10}; do
+            if curl -f http://localhost:8000 >/dev/null 2>&1; then
+              echo "Backend is ready!"
+              break
+            fi
+            echo "Backend not ready, waiting... ($i/10)"
+            sleep 10
+          done
+          
+          echo "Services status check completed"
 
       - name: Run Cypress E2E tests
         uses: cypress-io/github-action@v6
