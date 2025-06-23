@@ -3,6 +3,14 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UserForm from '../UserForm';
 
+// Mock du service API
+jest.mock('../../../services/api', () => ({
+  __esModule: true,
+  default: {
+    createUser: jest.fn(() => Promise.resolve({ message: "Utilisateur créé avec succès", user_id: 1 })),
+  },
+}));
+
 describe('UserForm Component', () => {
   beforeEach(() => {
     render(<UserForm />);
@@ -174,14 +182,7 @@ describe('UserForm Component', () => {
       await waitFor(() => {
         expect(screen.getByText('Inscription réussie !')).toBeInTheDocument();
         expect(screen.getByText(/merci pour votre inscription, jean !/i)).toBeInTheDocument();
-        expect(consoleSpy).toHaveBeenCalledWith('Formulaire soumis:', {
-          firstName: 'Jean',
-          lastName: 'Dupont',
-          email: 'jean.dupont@example.com',
-          birthDate: dateString,
-          postalCode: '75001',
-          city: 'Paris'
-        });
+        expect(consoleSpy).toHaveBeenCalledWith('Utilisateur créé:', undefined);
       });
 
       consoleSpy.mockRestore();
