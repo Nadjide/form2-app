@@ -1,56 +1,78 @@
+version: '3.8'
+
 services:
-  db:
-    image: mysql:9.2
+  mysql:
+    image: mysql:8.0
+    container_name: form2-mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=form2_db
-      - MYSQL_USER=form2user
-      - MYSQL_PASSWORD=userpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: form2app
+      MYSQL_USER: form2user
+      MYSQL_PASSWORD: form2password
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
-      - ./sqlfiles/:/docker-entrypoint-initdb.d/
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - form2-network
     healthcheck:
-      test: mysqladmin ping -h localhost
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   adminer:
-    depends_on:
-      - db
-    image: adminer
+    image: adminer:4.8.1
+    container_name: form2-adminer
     ports:
-      - 8080:8080
+      - "8080:8080"
+    networks:
+      - form2-network
+    depends_on:
+      - mysql
 
   server:
-    restart: on-failure
-    image: python-api-form2
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: form2-server
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: form2app
+      MYSQL_USER: form2user
+      MYSQL_ROOT_PASSWORD: rootpassword
+      ADMIN_EMAIL: loise.fenoll@ynov.com
+      ADMIN_PASSWORD: PvdrTAzTeR247sDnAZBr
+    ports:
+      - "8000:8000"
+    networks:
+      - form2-network
+    depends_on:
+      mysql:
+        condition: service_healthy
     volumes:
       - ./server:/server
-    build:
-      context: .
-      dockerfile: ./server/Dockerfile
-    ports:
-      - 8000:8000
-    environment:
-      - MYSQL_HOST=db
-      - MYSQL_DATABASE=form2_db
-      - MYSQL_USER=root
-      - MYSQL_ROOT_PASSWORD=rootpassword
-    depends_on:
-      db:
-        condition: service_healthy
-    command: uvicorn server:app --proxy-headers --host 0.0.0.0 --port 8000
 
-  react:
-    image: react
+  frontend:
     build:
       context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - 3000:3000
+      dockerfile: Dockerfile
+    container_name: form2-frontend
     environment:
-      - REACT_APP_SERVER_URL=http://localhost:8000
+      REACT_APP_SERVER_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    networks:
+      - form2-network
+    depends_on:
+      - server
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/server
-    command: npm start 
+      - ./src:/app/src
+      - ./public:/app/public
+
+volumes:
+  mysql_data:
+
+networks:
+  form2-network:
+    driver: bridge 

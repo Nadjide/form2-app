@@ -13,4 +13,10 @@ COPY package-lock.json ./
 RUN npm install --legacy-peer-deps --silent
 RUN npm install react-scripts@5.0.1 -g --silent
 
-EXPOSE 3000 
+# add app
+COPY . ./
+
+EXPOSE 3000
+
+# start app
+CMD ["npm", "start"] 
