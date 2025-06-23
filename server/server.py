@@ -42,17 +42,19 @@ app.add_middleware(
 
 def get_db_connection():
     if os.getenv("VERCEL_ENV") == "production":
+        # Configuration pour AlwaysData avec les variables Vercel
         return mysql.connector.connect(
             host=os.getenv("ALWAYSDATA_HOST", "mysql-form2app.alwaysdata.net"),
             port=3306,
-            user=os.getenv("ALWAYSDATA_USER", "form2app"),
-            password=os.getenv("ALWAYSDATA_PASSWORD"),
-            database=os.getenv("ALWAYSDATA_DATABASE", "form2app_db"),
+            user=os.getenv("MYSQL_USER", "form2app"),
+            password=os.getenv("MY_SQL_ROOT_PASSWORD"),
+            database=os.getenv("MYSQL_DB", "form2app_db"),
             charset='utf8mb4',
             use_unicode=True,
             autocommit=True
         )
     else:
+        # Configuration pour développement local (Docker)
         return mysql.connector.connect(
             database=os.getenv("MYSQL_DATABASE", "form2app"),
             user=os.getenv("MYSQL_USER", "form2user"),
@@ -63,7 +65,7 @@ def get_db_connection():
 
 @app.get("/")
 async def hello_world():
-    return {"message": "Hello world", "status": "API is running"}
+    return {"message": "Hello world", "status": "API is running", "env": os.getenv("VERCEL_ENV", "development")}
 
 @app.get("/health")
 async def health_check():
@@ -73,9 +75,18 @@ async def health_check():
         cursor.execute("SELECT 1")
         result = cursor.fetchone()
         conn.close()
-        return {"status": "healthy", "database": "connected"}
+        return {
+            "status": "healthy", 
+            "database": "connected",
+            "env": os.getenv("VERCEL_ENV", "development"),
+            "db_host": os.getenv("ALWAYSDATA_HOST", "localhost") if os.getenv("VERCEL_ENV") == "production" else "localhost"
+        }
     except Exception as e:
-        return {"status": "unhealthy", "error": str(e)}
+        return {
+            "status": "unhealthy", 
+            "error": str(e),
+            "env": os.getenv("VERCEL_ENV", "development")
+        }
 
 @app.get("/users")
 async def get_users():

@@ -14,24 +14,24 @@ Allez dans votre repository GitHub > Settings > Secrets and variables > Actions 
 
 Dans le **dashboard Vercel** > votre projet > Settings > Environment Variables
 
-### **Variables pour la base de données AlwaysData :**
-- `ALWAYSDATA_HOST` = `mysql-form2app.alwaysdata.net`
-- `ALWAYSDATA_USER` = `form2app`
-- `ALWAYSDATA_PASSWORD` = [votre mot de passe AlwaysData]
-- `ALWAYSDATA_DATABASE` = `form2app_db`
-
-### **Variables pour l'application :**
-- `VERCEL_ENV` = `production`
+### **Variables que vous avez créées :**
 - `PORT` = `8000` (optionnel, Vercel gère automatiquement)
+- `MYSQL_DB` = `form2app_db`
+- `MY_SQL_ROOT_PASSWORD` = [votre mot de passe AlwaysData]
+- `MYSQL_USER` = `form2app`
+
+### **Variables supplémentaires à ajouter :**
+- `ALWAYSDATA_HOST` = `mysql-form2app.alwaysdata.net`
+- `VERCEL_ENV` = `production`
 
 ## 🚀 Étapes de configuration
 
 ### **1. Configuration Vercel (priorité)**
 
-1. **Créer un compte Vercel** : https://vercel.com
-2. **Connecter votre repository GitHub**
-3. **Importer le projet** (pointer vers le dossier `/server`)
-4. **Ajouter les variables d'environnement** dans Vercel Dashboard
+1. ✅ **Compte Vercel créé** : https://vercel.com
+2. ✅ **Variables d'environnement ajoutées** (PORT, MYSQL_DB, etc.)
+3. **À ajouter** : `ALWAYSDATA_HOST` et `VERCEL_ENV`
+4. **Importer le projet** (pointer vers le dossier `/server`)
 5. **Déployer**
 
 ### **2. Configuration GitHub Actions (pour CI/CD)**
@@ -53,12 +53,21 @@ Dans le **dashboard Vercel** > votre projet > Settings > Environment Variables
 2. **Exécuter le script** `server/alwaysdata_setup.sql`
 3. **Vérifier les tables** créées
 
-## 📝 Workflow de déploiement
+## 📝 Variables d'environnement actuelles sur Vercel
 
-1. **Push sur GitHub** → déclenche les workflows
-2. **Tests et build** → exécutés par GitHub Actions
-3. **Déploiement Vercel** → automatique via le workflow `production.yml`
-4. **Frontend GitHub Pages** → déployé automatiquement
+Vos variables existantes :
+```
+PORT = 8000
+MYSQL_DB = form2app_db
+MY_SQL_ROOT_PASSWORD = [votre mot de passe]
+MYSQL_USER = form2app
+```
+
+Variables à ajouter :
+```
+ALWAYSDATA_HOST = mysql-form2app.alwaysdata.net
+VERCEL_ENV = production
+```
 
 ## 🔗 URLs finales
 
@@ -69,6 +78,6 @@ Dans le **dashboard Vercel** > votre projet > Settings > Environment Variables
 
 ## ⚠️ Important
 
-- Les **variables d'environnement** de l'application (DB, etc.) vont dans **Vercel**
-- Les **secrets de déploiement** (tokens, IDs) vont dans **GitHub Actions**
-- Une fois déployé sur Vercel, mettez à jour `REACT_APP_SERVER_URL` dans GitHub Actions avec l'URL Vercel finale 
+- ✅ Les **variables d'environnement** de l'application (DB, etc.) sont dans **Vercel**
+- ⏳ Les **secrets de déploiement** (tokens, IDs) vont dans **GitHub Actions**
+- ⏳ Une fois déployé sur Vercel, mettez à jour `REACT_APP_SERVER_URL` dans GitHub Actions avec l'URL Vercel finale 
