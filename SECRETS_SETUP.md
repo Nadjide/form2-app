@@ -8,7 +8,7 @@ Allez dans votre repository GitHub > Settings > Secrets and variables > Actions 
 - `VERCEL_TOKEN` : Token d'API Vercel (généré dans Vercel Dashboard > Settings > Tokens)
 - `VERCEL_ORG_ID` : ID de votre organisation Vercel
 - `VERCEL_PROJECT_ID` : ID de votre projet Vercel
-- `CODECOV_TOKEN` : [déjà configuré]
+- `CODECOV_TOKEN` : ID de votre CODECOV
 
 ## 🌐 Variables d'environnement Vercel (pour l'application backend)
 
