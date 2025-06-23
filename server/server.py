@@ -37,32 +37,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def get_db_connection():
+    return mysql.connector.connect(
+        database=os.getenv("MYSQL_DATABASE"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD", os.getenv("MYSQL_ROOT_PASSWORD")),
+        port=3306, 
+        host=os.getenv("MYSQL_HOST", "localhost")
+    )
+
 @app.get("/")
 async def hello_world():
     return "Hello world"
 
 @app.get("/users")
 async def get_users():
-    conn = mysql.connector.connect(
-        database=os.getenv("MYSQL_DATABASE"),
-        user=os.getenv("MYSQL_USER"),
-        password=os.getenv("MYSQL_ROOT_PASSWORD"),
-        port=3306, 
-        host=os.getenv("MYSQL_HOST"))
+    conn = get_db_connection()
     cursor = conn.cursor()
     sql_select_Query = "select * from utilisateur"
     cursor.execute(sql_select_Query)
     records = cursor.fetchall()
+    conn.close()
     return {'utilisateurs': records}
 
 @app.post("/users")
 async def create_user(user: User):
-    conn = mysql.connector.connect(
-        database=os.getenv("MYSQL_DATABASE"),
-        user=os.getenv("MYSQL_USER"),
-        password=os.getenv("MYSQL_ROOT_PASSWORD"),
-        port=3306, 
-        host=os.getenv("MYSQL_HOST"))
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     insert_query = """
@@ -86,18 +86,14 @@ async def create_user(user: User):
 
 @app.post("/login")
 async def create_user(login: Login):
-    conn = mysql.connector.connect(
-        database=os.getenv("MYSQL_DATABASE"),
-        user=os.getenv("MYSQL_USER"),
-        password=os.getenv("MYSQL_ROOT_PASSWORD"),
-        port=3306, 
-        host=os.getenv("MYSQL_HOST"))
+    conn = get_db_connection()
     cursor = conn.cursor()
     email = login.email
     password = login.password
     sql_select_Query = "select * from admin WHERE email=\""+ str(email) +"\" AND password=\""+ str(password)+"\";"
     cursor.execute(sql_select_Query)
     records = cursor.fetchall()
+    conn.close()
     if cursor.rowcount > 0:
         encoded_jwt = jwt.encode({'data': [{'email':email}]}, MY_SECRET, algorithm=ALGORITHM)
         return encoded_jwt
@@ -121,12 +117,7 @@ async def deleteUser(id: str, authorization: Optional[str] = Header(None)):
     token = authorization.split(" ")[1]
     try:
         decoded_payload = jwt.decode(token, MY_SECRET, algorithms=[ALGORITHM])
-        conn = mysql.connector.connect(
-            database=os.getenv("MYSQL_DATABASE"),
-            user=os.getenv("MYSQL_USER"),
-            password=os.getenv("MYSQL_ROOT_PASSWORD"),
-            port=3306, 
-            host=os.getenv("MYSQL_HOST"))
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("DELETE FROM utilisateur WHERE id = %s", (id,))
         conn.commit()

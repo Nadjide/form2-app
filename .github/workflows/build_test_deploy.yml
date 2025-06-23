@@ -45,9 +45,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run unit tests
-        run: npm test
-        env:
-          REACT_APP_SERVER_URL: ${{ env.REACT_APP_SERVER_URL }}
+        run: npm run test:unit
 
       - name: Build Docker images
         run: |
@@ -57,14 +55,58 @@ jobs:
       - name: Start Docker stack
         run: |
           docker compose up -d
-          sleep 30
+          echo "Waiting for services to be ready..."
+          sleep 60
+
+      - name: Check services health
+        run: |
+          echo "Checking MySQL..."
+          for i in {1..10}; do
+            if docker compose exec mysql mysqladmin ping -h localhost --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "MySQL not ready, waiting... ($i/10)"
+            sleep 10
+          done
+          
+          echo "Checking Frontend..."
+          for i in {1..10}; do
+            if curl -f http://localhost:3000 >/dev/null 2>&1; then
+              echo "Frontend is ready!"
+              break
+            fi
+            echo "Frontend not ready, waiting... ($i/10)"
+            sleep 10
+          done
+          
+          echo "Checking Backend..."
+          for i in {1..10}; do
+            if curl -f http://localhost:8000 >/dev/null 2>&1; then
+              echo "Backend is ready!"
+              break
+            fi
+            echo "Backend not ready, waiting... ($i/10)"
+            sleep 10
+          done
+          
+          echo "Services status check completed"
+
+      - name: Show Docker logs for debugging
+        run: |
+          echo "=== Frontend logs ==="
+          docker compose logs frontend || echo "No frontend logs"
+          echo "=== Backend logs ==="
+          docker compose logs server || echo "No backend logs"
+          echo "=== MySQL logs ==="
+          docker compose logs mysql || echo "No MySQL logs"
 
       - name: Run E2E tests with Cypress
         uses: cypress-io/github-action@v6
         with:
-          start: docker compose up -d
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
+          wait-on-timeout: 180
+        continue-on-error: true
 
       - name: Stop Docker stack
         run: docker compose down

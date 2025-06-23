@@ -39,9 +39,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run tests
-        run: npm test
-        env:
-          REACT_APP_SERVER_URL: ${{ env.REACT_APP_SERVER_URL }}
+        run: npm run test:unit
 
       - name: Generate documentation
         run: npm run jsdoc
@@ -70,15 +68,24 @@ jobs:
       - name: Start Docker Compose
         run: |
           docker compose up -d
-          sleep 30
-        env:
-          REACT_APP_SERVER_URL: ${{ env.REACT_APP_SERVER_URL }}
+          echo "Waiting for services to be ready..."
+          sleep 60
+
+      - name: Check services health
+        run: |
+          echo "Checking MySQL..."
+          docker compose exec mysql mysqladmin ping -h localhost --silent
+          echo "Checking Frontend..."
+          curl -f http://localhost:3000 || (echo "Frontend not ready" && exit 1)
+          echo "Checking Backend..."
+          curl -f http://localhost:8000 || (echo "Backend not ready" && exit 1)
+          echo "All services are ready!"
 
       - name: Run Cypress E2E tests
         uses: cypress-io/github-action@v6
         with:
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
+          wait-on: 'http://localhost:3000, http://localhost:8000'
+          wait-on-timeout: 180
 
       - name: Stop Docker Compose
         run: docker compose down

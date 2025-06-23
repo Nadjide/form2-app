@@ -40,7 +40,7 @@ services:
       MYSQL_HOST: mysql
       MYSQL_DATABASE: form2app
       MYSQL_USER: form2user
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_PASSWORD: form2password
       ADMIN_EMAIL: loise.fenoll@ynov.com
       ADMIN_PASSWORD: PvdrTAzTeR247sDnAZBr
     ports:
