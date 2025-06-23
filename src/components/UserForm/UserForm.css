@@ -16,6 +16,34 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.api-error-message {
+  background: rgba(255, 107, 107, 0.2);
+  border: 2px solid #ff6b6b;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+.api-error-message p {
+  margin: 0;
+  color: #ff6b6b;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .user-form {
   display: flex;
   flex-direction: column;
@@ -51,6 +79,12 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+}
+
+.form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .form-group input::placeholder {
@@ -98,6 +132,8 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .submit-button:hover:not(:disabled) {
@@ -113,12 +149,48 @@
   box-shadow: none;
 }
 
+.submit-button:disabled::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+
+.submit-button:disabled:has-text('Inscription en cours...'):after {
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .success-message {
   text-align: center;
   padding: 3rem 2rem;
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .success-message h2 {
@@ -131,7 +203,7 @@
 .success-message p {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .success-message button {
@@ -143,6 +215,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
 .success-message button:hover {
